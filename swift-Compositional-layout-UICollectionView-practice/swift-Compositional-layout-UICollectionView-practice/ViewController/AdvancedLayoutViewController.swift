@@ -26,7 +26,7 @@ final class AdvancedLayoutViewController: UIViewController {
         case main
     }
     
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Int>! = nil
+    private var dataSource: UICollectionViewDiffableDataSource<Section, SampleItemModel>! = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +39,7 @@ final class AdvancedLayoutViewController: UIViewController {
     private func configureDataSource() {
         
         // initial data
-        let list = Array(0..<100)
+        let list = Array(0..<100).map { SampleItemModel(value: $0) }
         
         // NOTE: NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>
         // データを格納して管理するクラス
@@ -67,19 +67,19 @@ final class AdvancedLayoutViewController: UIViewController {
         // ・indexの取得（SectionとItem）
         // 　public func indexOfItem(_ identifier: ItemIdentifierType) -> Int?
         // 　public func indexOfSection(_ identifier: SectionIdentifierType) -> Int?
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Int>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, SampleItemModel>()
         snapshot.appendSections([.main])
         snapshot.appendItems(list)
         
         // NOTE: UICollectionViewDiffableDataSource
         // データをUIに紐付けて表示するクラス
-        dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: advancedCollectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Section, SampleItemModel>(collectionView: advancedCollectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, identifier: SampleItemModel) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCell",
                                                                 for: indexPath) as? LabelCell
                 else { return UICollectionViewCell() }
-            cell.set(text: "\(identifier)")
+            cell.set(text: "\(identifier.value)")
             return cell
         }
 
