@@ -23,7 +23,7 @@ final class ViewController: UIViewController {
             compositionalCollectionView.register(UINib(nibName: "SectionBackgroundDecorationView", bundle: nil),
                                                  forSupplementaryViewOfKind: ViewController.sectionBackgroundDecorationElementKind,
                                                  withReuseIdentifier: "SectionBackgroundDecorationView")
-            compositionalCollectionView.dataSource = self
+//            compositionalCollectionView.dataSource = self
         }
     }
     
@@ -34,8 +34,8 @@ final class ViewController: UIViewController {
         super.viewDidLoad()
         
         // レイアウトを指定する
-        sectionCount = 6
-        compositionalCollectionView.collectionViewLayout = orthogonalScrollingLayout
+//        sectionCount = 6
+//        compositionalCollectionView.collectionViewLayout = orthogonalScrollingLayout
     }
     
 }

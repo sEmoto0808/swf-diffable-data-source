@@ -6,6 +6,10 @@
 //  Copyright © 2020 S.Emoto. All rights reserved.
 //
 
+/// NOTE: 初期起動のstoryboardを変更する方法
+///
+/// https://www.366service.com/jp/qa/be25f04c990691d6ac92f00e978bd2ea
+
 import UIKit
 
 final class AdvancedLayoutViewController: UIViewController {
@@ -36,31 +40,51 @@ final class AdvancedLayoutViewController: UIViewController {
         
         // initial data
         let list = Array(0..<100)
+        
+        // NOTE: NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>
+        // データを格納して管理するクラス
+        //
+        // SectionIdentifierType: Sectionを定義する型でHashableであること（Enumとかが多そう）
+        // ItemIdentifierType: cellに表示するデータ型でHashableであること
+        //
+        // 用意されているメソッド
+        //
+        // データ管理系
+        // ・データの追加・削除（SectionとItem）
+        // ・並び替え（SectionとItem）
+        // ・リロード（SectionとItem）
+        //
+        // データ参照系
+        // ・データ数の取得（SectionとItem）
+        // 　public var numberOfItems: Int { get }
+        // 　public var numberOfSections: Int { get }
+        // 　public func numberOfItems(inSection identifier: SectionIdentifierType) -> Int
+        // ・値（一覧）の取得（SectionとItem）
+        // 　public var sectionIdentifiers: [SectionIdentifierType] { get }
+        // 　public var itemIdentifiers: [ItemIdentifierType] { get }
+        // 　public func itemIdentifiers(inSection identifier: SectionIdentifierType) -> [ItemIdentifierType]
+        // 　public func sectionIdentifier(containingItem identifier: ItemIdentifierType) -> SectionIdentifierType?
+        // ・indexの取得（SectionとItem）
+        // 　public func indexOfItem(_ identifier: ItemIdentifierType) -> Int?
+        // 　public func indexOfSection(_ identifier: SectionIdentifierType) -> Int?
         var snapshot = NSDiffableDataSourceSnapshot<Section, Int>()
         snapshot.appendSections([.main])
         snapshot.appendItems(list)
         
+        // NOTE: UICollectionViewDiffableDataSource
+        // データをUIに紐付けて表示するクラス
         dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: advancedCollectionView) {
             (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCell",
                                                                 for: indexPath) as? LabelCell
                 else { return UICollectionViewCell() }
-            cell.set(text: "\(list[indexPath.row])")
+            cell.set(text: "\(identifier)")
             return cell
         }
 
         dataSource.apply(snapshot, animatingDifferences: false)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
