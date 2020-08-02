@@ -47,7 +47,7 @@ final class AdvancedLayoutViewController: UIViewController {
         // SectionIdentifierType: Sectionを定義する型でHashableであること（Enumとかが多そう）
         // ItemIdentifierType: cellに表示するデータ型でHashableであること
         //
-        // 用意されているメソッド
+        // 用意されているメソッド、プロパティ
         //
         // データ管理系
         // ・データの追加・削除（SectionとItem）
@@ -71,9 +71,48 @@ final class AdvancedLayoutViewController: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(list)
         
-        // NOTE: UICollectionViewDiffableDataSource
+        
+        
+        
+        // NOTE: UICollectionViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>
         // データをUIに紐付けて表示するクラス
+        //
+        // SectionIdentifierType: Sectionを定義する型でHashableであること（Enumとかが多そう）
+        // ItemIdentifierType: cellに表示するデータ型でHashableであること
+        //
+        // Initializer
+        // ・インスタンス生成
+        // 　public typealias CellProvider = (UICollectionView, IndexPath, ItemIdentifierType) -> UICollectionViewCell?
+        // 　public init(collectionView: UICollectionView, cellProvider: @escaping CellProvider)
+        // ・ヘッダーとフッター追加
+        // 　public typealias SupplementaryViewProvider = (UICollectionView, String, IndexPath) -> UICollectionReusableView?
+        // 　public var supplementaryViewProvider: SupplementaryViewProvider?
+        //
+        // 用意されているメソッド、プロパティ
+        //
+        // データ管理系
+        // ・データを適用する
+        // 　open func apply(_ snapshot: NSDiffableDataSourceSnapshot, animatingDifferences: Bool = true, completion: (() -> Void)? = nil)
+        //
+        // データ参照系
+        // ・Snapshotの取得
+        // 　open func snapshot() -> NSDiffableDataSourceSnapshot
+        // ・cellに表示するデータを取得
+        // 　open func itemIdentifier(for indexPath: IndexPath) -> ItemIdentifierType?
+        // ・indexPathの取得
+        // 　open func indexPath(for itemIdentifier: ItemIdentifierType) -> IndexPath?
+        //
+        // 元のDataSourceにあって引き継がれた系
+        // 　@objc open func numberOfSections(in collectionView: UICollectionView) -> Int
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
+        // 　@objc open func indexTitles(for collectionView: UICollectionView) -> [String]?
+        // 　@objc open func collectionView(_ collectionView: UICollectionView, indexPathForIndexTitle title: String, at index: Int) -> IndexPath
         dataSource = UICollectionViewDiffableDataSource<Section, SampleItemModel>(collectionView: advancedCollectionView) {
+            // CellProvider
             (collectionView: UICollectionView, indexPath: IndexPath, identifier: SampleItemModel) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LabelCell",
